@@ -1,8 +1,18 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     kotlin("kapt")
     id("kotlin-parcelize")
+}
+
+// Read properties from local.properties
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
 }
 
 android {
@@ -11,6 +21,8 @@ android {
 
     buildFeatures {
         viewBinding = true
+        // Enable buildConfig generation
+        buildConfig = true
     }
 
 
@@ -22,6 +34,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Add the API key from local.properties to BuildConfig
+        val tmdbApiKey = localProperties.getProperty("tmdb_api_key") ?: ""
+        buildConfigField("String", "TMDB_API_KEY", tmdbApiKey)
     }
 
     buildTypes {

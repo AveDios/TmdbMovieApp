@@ -34,16 +34,58 @@
             app:layout_constraintTop_toBottomOf="@+id/movie_poster_image_view"
             tools:text="Movie Title" />
 
+        <RatingBar
+            android:id="@+id/movie_rating_bar"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:numStars="5"
+            android:stepSize="0.1"
+            app:layout_constraintStart_toStartOf="@+id/movie_title_text_view"
+            app:layout_constraintTop_toBottomOf="@+id/movie_title_text_view"
+            tools:rating="3.5" />
+
+        <TextView
+            android:id="@+id/movie_rating_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            app:layout_constraintBottom_toBottomOf="@+id/movie_rating_bar"
+            app:layout_constraintStart_toEndOf="@+id/movie_rating_bar"
+            app:layout_constraintTop_toTopOf="@+id/movie_rating_bar"
+            tools:text="7.0/10" />
+
         <TextView
             android:id="@+id/movie_overview_text_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/movie_title_text_view"
+            app:layout_constraintEnd_toEndOf="@+id/movie_title_text_view"
+            app:layout_constraintStart_toStartOf="@+id/movie_title_text_view"
+            app:layout_constraintTop_toBottomOf="@+id/movie_rating_bar"
             tools:text="This is a sample movie overview. It can be quite long and might need to wrap to multiple lines." />
+
+        <TextView
+            android:id="@+id/release_date_label_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Release Date:"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/movie_overview_text_view"
+            app:layout_constraintTop_toBottomOf="@+id/movie_overview_text_view" />
+
+        <TextView
+            android:id="@+id/release_date_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            app:layout_constraintBaseline_toBaselineOf="@+id/release_date_label_text_view"
+            app:layout_constraintStart_toEndOf="@+id/release_date_label_text_view"
+            tools:text="2024-01-01" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

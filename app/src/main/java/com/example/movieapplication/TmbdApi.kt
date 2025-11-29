@@ -12,6 +12,20 @@ interface TmdbApi {
         @Query("page") page: Int = 1
     ): Call<MovieResponse>
 
+    @GET("movie/popular")
+    fun getPopularMovies(
+        @Query("api_key") apiKey: String,
+        @Query("language") language: String = "en-US",
+        @Query("page") page: Int = 1
+    ): Call<MovieResponse>
+
+    @GET("movie/top_rated")
+    fun getTopRatedMovies(
+        @Query("api_key") apiKey: String,
+        @Query("language") language: String = "en-US",
+        @Query("page") page: Int = 1
+    ): Call<MovieResponse>
+
     @GET("search/movie")
     fun searchMovies(
         @Query("api_key") apiKey: String,
