@@ -44,7 +44,7 @@ class MovieListFragment : Fragment() {
     private fun setupRecyclerView() {
         movieAdapter = MovieAdapter(mutableListOf()) { movie ->
             val intent = Intent(activity, MovieDetailsActivity::class.java).apply {
-                putExtra(MainActivity.MOVIE_EXTRA, movie)
+                putExtra(MovieDetailsActivity.MOVIE_EXTRA, movie)
             }
             startActivity(intent)
         }

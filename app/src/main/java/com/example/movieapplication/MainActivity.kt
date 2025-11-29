@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
@@ -28,12 +30,29 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setSupportActionBar(binding.toolbar) // Ustawienie paska narzędzi
+
         apiService = RetrofitClient.instance.create(TmdbApi::class.java)
 
         setupSearchRecyclerView()
         setupViewPager()
         setupTabLayout()
         setupSearchView()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_favorites -> {
+                startActivity(Intent(this, FavoritesActivity::class.java))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun setupViewPager() {
@@ -55,7 +74,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupSearchRecyclerView() {
         searchAdapter = MovieAdapter(mutableListOf()) { movie ->
             val intent = Intent(this, MovieDetailsActivity::class.java).apply {
-                putExtra(MOVIE_EXTRA, movie)
+                putExtra(MovieDetailsActivity.MOVIE_EXTRA, movie)
             }
             startActivity(intent)
         }
@@ -93,7 +112,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun searchMovies(query: String) {
         showSearchView()
-        apiService.searchMovies("fc492a84408390f05354c5e045ae5027", query).enqueue(object : Callback<MovieResponse> {
+        apiService.searchMovies(BuildConfig.TMDB_API_KEY, query).enqueue(object : Callback<MovieResponse> {
             override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
                 if (response.isSuccessful) {
                     response.body()?.results?.let { searchAdapter.updateMovies(it) }
