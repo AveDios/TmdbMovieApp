@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">MovieApplication</string>
+    <string name="back">back</string>
+    <string name="open_second_view">Open Second View</string>
+    <string name="srodkowy_tekst">Środkowy Tekst</string>
+    <string name="srodkowy_przycisk">Środkowy Przycisk</string>
+    <string name="exit_the_app">Exit The App</string>
+</resources>
