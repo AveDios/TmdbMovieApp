@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.movieapplication.databinding.FragmentMovieListBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -19,6 +20,8 @@ class MovieListFragment : Fragment() {
 
     private lateinit var movieAdapter: MovieAdapter
     private lateinit var category: String
+    private var currentPage = 1
+    private var isLoading = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +41,7 @@ class MovieListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
-        fetchMovies()
+        fetchMovies(currentPage)
     }
 
     private fun setupRecyclerView() {
@@ -51,26 +54,47 @@ class MovieListFragment : Fragment() {
         binding.recyclerView.apply {
             layoutManager = GridLayoutManager(context, 2)
             adapter = movieAdapter
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val layoutManager = recyclerView.layoutManager as GridLayoutManager
+                    val totalItemCount = layoutManager.itemCount
+                    val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+
+                    if (!isLoading && totalItemCount <= (lastVisibleItemPosition + 2)) {
+                        currentPage++
+                        fetchMovies(currentPage)
+                    }
+                }
+            })
         }
     }
 
-    private fun fetchMovies() {
+    private fun fetchMovies(page: Int) {
+        isLoading = true
         val api = RetrofitClient.instance.create(TmdbApi::class.java)
         val call = when (category) {
-            "popular" -> api.getPopularMovies(BuildConfig.TMDB_API_KEY)
-            "top_rated" -> api.getTopRatedMovies(BuildConfig.TMDB_API_KEY)
-            else -> api.getUpcomingMovies(BuildConfig.TMDB_API_KEY)
+            "popular" -> api.getPopularMovies(BuildConfig.TMDB_API_KEY, page = page)
+            "top_rated" -> api.getTopRatedMovies(BuildConfig.TMDB_API_KEY, page = page)
+            else -> api.getUpcomingMovies(BuildConfig.TMDB_API_KEY, page = page)
         }
 
         call.enqueue(object : Callback<MovieResponse> {
             override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
                 if (response.isSuccessful) {
-                    response.body()?.results?.let { movieAdapter.updateMovies(it) }
+                    response.body()?.results?.let {
+                        if (page == 1) {
+                            movieAdapter.updateMovies(it)
+                        } else {
+                            movieAdapter.addMovies(it)
+                        }
+                    }
                 }
+                isLoading = false
             }
 
             override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
-                // Handle failure
+                isLoading = false
             }
         })
     }

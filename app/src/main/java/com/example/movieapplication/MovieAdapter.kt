@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
 class MovieAdapter(
-    private var movies: List<Movie>,
+    private var movies: MutableList<Movie>,
     private val onMovieClick: (Movie) -> Unit
 ) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
 
@@ -41,7 +41,14 @@ class MovieAdapter(
     override fun getItemCount() = movies.size
 
     fun updateMovies(newMovies: List<Movie>) {
-        movies = newMovies
+        movies.clear()
+        movies.addAll(newMovies)
         notifyDataSetChanged()
+    }
+
+    fun addMovies(newMovies: List<Movie>) {
+        val startPosition = movies.size
+        movies.addAll(newMovies)
+        notifyItemRangeInserted(startPosition, newMovies.size)
     }
 }
